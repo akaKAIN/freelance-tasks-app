@@ -1,7 +1,7 @@
 <template>
-  <h1 class="text-white center">Задач пока нет</h1>
-  <template >
-    <h3 class="text-white">Всего активных задач: 0</h3>
+  <h1 class="text-white center" v-if="!taskList.length">Задач пока нет</h1>
+  <template v-else>
+    <h3 class="text-white">Всего активных задач: {{ activeTasksQuantity }}</h3>
     <div class="card">
       <h2 class="card-title">
         Название задачи
@@ -10,7 +10,7 @@
       <p>
         <strong>
           <small>
-            {{new Date().toLocaleDateString()}}
+            {{ new Date().toLocaleDateString() }}
           </small>
         </strong>
       </p>
@@ -19,10 +19,30 @@
   </template>
 </template>
 
-<script>
-import AppStatus from '../components/AppStatus'
+<script lang="ts">
+import AppStatus from "../components/AppStatus.vue";
+import { useStore } from "vuex";
+import { computed, onMounted, watch } from "vue";
+import { Task } from "@/models/base";
 
 export default {
-  components: {AppStatus}
-}
+  components: { AppStatus },
+  setup() {
+    const store = useStore();
+
+    const taskList = computed<Task[]>(() => store.getters.tasks);
+    const activeTasksQuantity = computed<number>(
+      () =>
+        taskList.value.filter((task: Task) => task.status === "active").length
+    );
+    onMounted(() => {
+      store.dispatch("getTaskListFromAPI");
+    });
+    // watch(taskList, () => {
+    //   store.dispatch("setTaskList", taskList);
+    // });
+
+    return { taskList, activeTasksQuantity };
+  }
+};
 </script>
