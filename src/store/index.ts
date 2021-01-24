@@ -14,14 +14,26 @@ export default createStore({
     getTaskListFromAPI: async state => {
       try {
         const response: AxiosResponse<DBStore> = await serviceAPI.getDBStore();
-        state.tasks = response.data ? response.data.tasks : [];
+        if (response.status === 200) {
+          state.tasks = response.data ? response.data.tasks : [];
+        }
       } catch (err) {
         console.error("Error in get tasks: ", err);
       }
     },
 
-    addTask: (state, payload: Task) => {
-      state.tasks.push(payload);
+    addTask: async (state, payload: Task) => {
+      try {
+        const instanceTasks: Task[] = [...state.tasks, payload];
+        const response: AxiosResponse = await serviceAPI.updateDBStore({
+          tasks: instanceTasks
+        });
+        if (response.status === 200) {
+          state.tasks = instanceTasks;
+        }
+      } catch (err) {
+        console.error("Error by adding new Task");
+      }
     }
   },
   actions: {

@@ -21,11 +21,11 @@ export default class ServiceApi {
     return _axios;
   }
 
-  async getDBStore(): Promise<AxiosResponse<DBStore>> {
-    return await this.axios.get(this.baseUrl);
+  getDBStore(): Promise<AxiosResponse<DBStore>> {
+    return this.axios.get(this.baseUrl);
   }
 
-  async updateDBStore(taskList: Task[]): Promise<AxiosResponse> {
-    return await this.axios.patch(this.baseUrl, { tasks: taskList });
+  updateDBStore(dbStore: DBStore): Promise<AxiosResponse> {
+    return this.axios.patch(this.baseUrl, dbStore);
   }
 }
