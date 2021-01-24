@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-if="isValidId">
+  <div class="card" v-if="currentTask">
     <h2>{{ currentTask.title }}</h2>
     <p>
       <strong>Status</strong>:
@@ -50,9 +50,7 @@ export default {
       console.log("watch: ", newVal, oldVal)
     );
 
-    const isValidId = (): boolean => currentTask.value !== undefined;
-
-    return { isValidId, currentTask, changeStatus };
+    return { currentTask, changeStatus };
   }
 };
 </script>
