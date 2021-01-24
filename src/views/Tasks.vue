@@ -2,19 +2,21 @@
   <h1 class="text-white center" v-if="!taskList.length">Задач пока нет</h1>
   <template v-else>
     <h3 class="text-white">Всего активных задач: {{ activeTasksQuantity }}</h3>
-    <div class="card">
+    <div class="card" v-for="task in taskList" :key="task.id">
       <h2 class="card-title">
-        Название задачи
-        <AppStatus :type="'done'" />
+        {{ task.title }}
+        <AppStatus :status="task.status" />
       </h2>
       <p>
         <strong>
           <small>
-            {{ new Date().toLocaleDateString() }}
+            {{ task.deadline }}
           </small>
         </strong>
       </p>
-      <button class="btn primary">Посмотреть</button>
+      <router-link :to="/task/ + task.id"
+        ><button class="btn primary">Посмотреть</button></router-link
+      >
     </div>
   </template>
 </template>
@@ -22,7 +24,7 @@
 <script lang="ts">
 import AppStatus from "../components/AppStatus.vue";
 import { useStore } from "vuex";
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted } from "vue";
 import { Task } from "@/models/base";
 
 export default {

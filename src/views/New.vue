@@ -17,14 +17,13 @@
     </div>
 
     <button class="btn primary" :disabled="!isValidForm">Создать</button>
-    <button class="btn" type="button" @click="show">show</button>
   </form>
 </template>
 
 <script lang="ts">
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
-import { Task } from "@/models/base";
+import { StatusType, Task } from "@/models/base";
 
 export default {
   name: "New",
@@ -41,22 +40,20 @@ export default {
         description.value.length > validLength
     );
 
-    const show = (): void => {
-      console.log(title.value, deadline.value, description.value);
-    };
-
     const store = useStore();
-    const newTask: Task = {
-      id: "3",
+    const defaultStatus: StatusType = "active";
+    const idGenerator = () => Math.floor(Math.random() * 10e12).toString();
+    const generateTask = () => ({
+      id: idGenerator(),
       title: title.value,
       description: description.value,
-      status: "active",
+      status: defaultStatus,
       deadline: deadline.value
-    };
+    });
 
-    const createTask = () => store.dispatch("addTask", newTask);
+    const createTask = () => store.dispatch("addTask", generateTask());
 
-    return { title, deadline, description, isValidForm, show, createTask };
+    return { title, deadline, description, isValidForm, createTask };
   }
 };
 </script>

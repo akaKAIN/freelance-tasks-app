@@ -1,4 +1,4 @@
-export type StatusType = "active" | "in-progress" | "done" | "canceled";
+export type StatusType = "active" | "einprogress" | "done" | "canceled";
 
 export interface Task {
   id: string;
@@ -10,4 +10,11 @@ export interface Task {
 
 export interface DBStore {
   tasks: Task[];
+}
+
+export enum Statuses {
+  active = "Active",
+  done = "Done",
+  canceled = "Cancel",
+  einprogress = "In work"
 }
