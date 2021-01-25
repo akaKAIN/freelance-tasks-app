@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosStatic } from "axios";
-import { DBStore, Task } from "@/models/base";
+import { DBStore } from "@/models/base";
 
 export default class ServiceApi {
   baseUrl: string;

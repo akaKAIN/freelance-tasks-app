@@ -2,7 +2,6 @@ import {
   createRouter,
   createWebHistory,
   RouteRecordRaw,
-  RouterOptions
 } from "vue-router";
 import Tasks from "@/views/Tasks.vue";
 import Task from "@/views/Task.vue";
