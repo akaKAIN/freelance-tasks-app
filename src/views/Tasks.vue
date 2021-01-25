@@ -46,9 +46,6 @@ export default {
     });
 
     onUpdated(() => (isLoading.value = false));
-    // watch(taskList, () => {
-    //   store.dispatch("setTaskList", taskList);
-    // });
 
     return { isLoading, taskList, activeTasksQuantity };
   }

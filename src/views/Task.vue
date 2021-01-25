@@ -1,6 +1,6 @@
 <template>
   <div class="loader" v-if="isLoading"></div>
-  <div class="card" v-if="currentTask">
+  <div class="card" v-if="currentTask && !isLoading">
     <h2>{{ currentTask.title }}</h2>
     <p>
       <strong>Status</strong>:
@@ -20,14 +20,14 @@
       </button>
     </div>
   </div>
-  <h3 class="text-white center" v-else>
+  <h3 class="text-white center" v-else-if="!currentTask && !isLoading">
     Задачи с id = <strong>{{ id }}</strong> нет.
   </h3>
 </template>
 
 <script lang="ts">
 import AppStatus from "@/components/AppStatus.vue";
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, ref, onUpdated } from "vue";
 import { useStore } from "vuex";
 import { StatusType, Task } from "@/models/base";
 
@@ -37,16 +37,16 @@ export default {
   setup(props: { id: string }) {
     const store = useStore();
     const isLoading = ref<boolean>(true);
+    onUpdated(() => (isLoading.value = false));
+
     store.commit("getTaskListFromAPI");
     const currentTask = computed<Task>(() =>
       store.getters.currentTask(props.id)
     );
-    isLoading.value = false;
+
     const changeStatus = (newStatus: StatusType) => {
       currentTask.value.status = newStatus;
     };
-
-    watch<Task>(currentTask, () => (isLoading.value = false));
 
     return { isLoading, currentTask, changeStatus };
   }
