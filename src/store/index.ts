@@ -26,9 +26,9 @@ export default createStore({
       }
     },
 
-    addTask: async (state, payload: Task) => {
+    addTask: async (state, task: Task) => {
       try {
-        const instanceTasks: Task[] = [...state.tasks, payload];
+        const instanceTasks: Task[] = [...state.tasks, task];
         const response: AxiosResponse = await serviceAPI.updateDBStore({
           tasks: instanceTasks
         });
@@ -38,11 +38,24 @@ export default createStore({
       } catch (err) {
         console.error("Error by adding new Task");
       }
+    },
+
+    updateTasksInAPI: async (state, DBStore: DBStore) => {
+      try {
+        const response = await serviceAPI.updateDBStore(DBStore);
+        if (response.status === 200) {
+          console.log("store was updated", response);
+        }
+      } catch (err) {
+        console.error("Error by updating DBStore");
+      }
     }
   },
   actions: {
     getTaskListFromAPI: ({ commit }) => commit("getTaskListFromAPI"),
-    addTask: (context, payload: Task) => context.commit("addTask", payload)
+    addTask: ({ commit }, task: Task) => commit("addTask", task),
+    updateTasksInAPI: ({ commit }, dbStore: DBStore) =>
+      commit("updateTasksInAPI", dbStore)
   },
   modules: {}
 });

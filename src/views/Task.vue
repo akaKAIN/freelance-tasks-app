@@ -40,12 +40,28 @@ export default {
     onUpdated(() => (isLoading.value = false));
 
     store.commit("getTaskListFromAPI");
+    const tasks = store.getters.tasks;
     const currentTask = computed<Task>(() =>
       store.getters.currentTask(props.id)
     );
 
     const changeStatus = (newStatus: StatusType) => {
-      currentTask.value.status = newStatus;
+      let idx = -1;
+      tasks.find((task: Task, ind: number) => {
+        if (task.id === props.id) {
+          idx = ind;
+        }
+      });
+      if (idx !== -1) {
+        console.log("idx: ", idx);
+        const instanceTask: Task = Object.assign({}, currentTask.value);
+        instanceTask.status = newStatus;
+        const instanceTaskList = store.getters.tasks;
+        instanceTaskList.splice(idx, 1, instanceTask);
+        store
+          .dispatch("updateTasksInAPI", { tasks: instanceTaskList })
+          .then(() => (currentTask.value.status = newStatus));
+      }
     };
 
     return { isLoading, currentTask, changeStatus };

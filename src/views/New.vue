@@ -23,7 +23,7 @@
 <script lang="ts">
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
-import { StatusType, Task } from "@/models/base";
+import { StatusType } from "@/models/base";
 
 export default {
   name: "New",
