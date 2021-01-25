@@ -30,12 +30,15 @@ import AppStatus from "@/components/AppStatus.vue";
 import { computed, ref, onUpdated } from "vue";
 import { useStore } from "vuex";
 import { StatusType, Task } from "@/models/base";
+import { useRouter, useRoute } from "vue-router";
 
 export default {
   props: { id: { type: String, required: true } },
   components: { AppStatus },
   setup(props: { id: string }) {
     const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
     const isLoading = ref<boolean>(true);
     onUpdated(() => (isLoading.value = false));
 
@@ -46,6 +49,7 @@ export default {
     );
 
     const changeStatus = (newStatus: StatusType) => {
+      console.log(tasks);
       let idx = -1;
       tasks.find((task: Task, ind: number) => {
         if (task.id === props.id) {
@@ -53,7 +57,6 @@ export default {
         }
       });
       if (idx !== -1) {
-        console.log("idx: ", idx);
         const instanceTask: Task = Object.assign({}, currentTask.value);
         instanceTask.status = newStatus;
         const instanceTaskList = store.getters.tasks;
@@ -61,6 +64,9 @@ export default {
         store
           .dispatch("updateTasksInAPI", { tasks: instanceTaskList })
           .then(() => (currentTask.value.status = newStatus));
+      } else {
+        console.error("No match in tasks", route);
+        router.push({ name: "task", params: { id: props.id } });
       }
     };
 

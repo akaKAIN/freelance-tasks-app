@@ -24,7 +24,7 @@
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import { StatusType } from "@/models/base";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 export default {
   name: "New",
@@ -44,14 +44,21 @@ export default {
     const router = useRouter();
     const store = useStore();
     const defaultStatus: StatusType = "active";
+    const isValidDate = (newDate: string) => {
+      const now: string = new Date().toLocaleDateString();
+      return new Date(newDate).toLocaleDateString() > now;
+    };
     const idGenerator = () => Math.floor(Math.random() * 10e12).toString();
-    const generateTask = () => ({
-      id: idGenerator(),
-      title: title.value,
-      description: description.value,
-      status: defaultStatus,
-      deadline: deadline.value
-    });
+    const generateTask = () => {
+      console.log(deadline.value);
+      return {
+        id: idGenerator(),
+        title: title.value,
+        description: description.value,
+        status: isValidDate(deadline.value) ? defaultStatus : "canceled",
+        deadline: deadline.value
+      };
+    };
 
     const createTask = () =>
       store.dispatch("addTask", generateTask()).then(() => router.push("/"));
