@@ -24,6 +24,7 @@
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import { StatusType } from "@/models/base";
+import {useRouter} from "vue-router";
 
 export default {
   name: "New",
@@ -40,6 +41,7 @@ export default {
         description.value.length > validLength
     );
 
+    const router = useRouter();
     const store = useStore();
     const defaultStatus: StatusType = "active";
     const idGenerator = () => Math.floor(Math.random() * 10e12).toString();
@@ -51,7 +53,8 @@ export default {
       deadline: deadline.value
     });
 
-    const createTask = () => store.dispatch("addTask", generateTask());
+    const createTask = () =>
+      store.dispatch("addTask", generateTask()).then(() => router.push("/"));
 
     return { title, deadline, description, isValidForm, createTask };
   }
