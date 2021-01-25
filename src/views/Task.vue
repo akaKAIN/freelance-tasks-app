@@ -1,4 +1,5 @@
 <template>
+  <div class="loader" v-if="isLoading"></div>
   <div class="card" v-if="currentTask">
     <h2>{{ currentTask.title }}</h2>
     <p>
@@ -26,7 +27,7 @@
 
 <script lang="ts">
 import AppStatus from "@/components/AppStatus.vue";
-import { computed, watch } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { StatusType, Task } from "@/models/base";
 
@@ -35,22 +36,19 @@ export default {
   components: { AppStatus },
   setup(props: { id: string }) {
     const store = useStore();
-    const tasks = computed<Task[]>(() => store.getters.tasks);
-    const currentTask = computed<Task | undefined>(() => {
-      return tasks.value.find((task: Task) => task.id === props.id);
-    });
-    console.log("currentTask: ", currentTask.value);
+    const isLoading = ref<boolean>(true);
+    store.commit("getTaskListFromAPI");
+    const currentTask = computed<Task>(() =>
+      store.getters.currentTask(props.id)
+    );
+    isLoading.value = false;
     const changeStatus = (newStatus: StatusType) => {
-      if (currentTask.value !== undefined) {
-        currentTask.value.status = newStatus;
-      }
+      currentTask.value.status = newStatus;
     };
 
-    watch(currentTask, (newVal, oldVal) =>
-      console.log("watch: ", newVal, oldVal)
-    );
+    watch<Task>(currentTask, () => (isLoading.value = false));
 
-    return { currentTask, changeStatus };
+    return { isLoading, currentTask, changeStatus };
   }
 };
 </script>

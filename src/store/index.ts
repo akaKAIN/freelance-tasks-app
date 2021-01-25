@@ -8,9 +8,11 @@ const tableName = "tasks.json";
 const serviceAPI = new ServiceApi(url + tableName);
 
 export default createStore({
-  state: { tasks: Array<Task>() },
+  state: { tasks: Array<Task>(), currentTask: Object as () => Task },
   getters: {
-    tasks: state => state.tasks
+    tasks: state => state.tasks,
+    currentTask: state => (id: string) =>
+      state.tasks.find((task: Task) => task.id === id)
   },
   mutations: {
     getTaskListFromAPI: async state => {
